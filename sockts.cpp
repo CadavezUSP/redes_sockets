@@ -17,7 +17,7 @@ int main(int argc, char const* argv[])
 	char* hello = "Hello from server";
 
 	// Creating socket file descriptor
-	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0))
+	if ((server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))
 		== 0) {
 		perror("socket failed");
 		exit(EXIT_FAILURE);
