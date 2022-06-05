@@ -6,7 +6,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#define PORT 8080
+#define PORT 8085
 int main(int argc, char const* argv[])
 {
 	int server_fd, new_socket, valread;
@@ -14,7 +14,7 @@ int main(int argc, char const* argv[])
 	int opt = 1;
 	int addrlen = sizeof(address);
 	char buffer[1024] = { 0 };
-	char* hello = "Hello from server";
+	char hello[] = "Hello from server";
 
 	// Creating socket file descriptor
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))
