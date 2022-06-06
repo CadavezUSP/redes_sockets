@@ -1,7 +1,7 @@
 all:
-	g++ client.cpp -o client -g -Wall -Werror;
-	g++ sockts.cpp -o server -g -Wall -Werror;
+	g++ ./Cliente/client.cpp -o ./Cliente/client -g -Wall -Werror;
+	g++ ./Servidor/sockts.cpp -o ./Servidor/server -g -Wall -Werror;
 cli:
-	./client
+	./Cliente/client
 serve:
-	./server
+	./Servidor/server
