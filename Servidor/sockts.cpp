@@ -3,18 +3,20 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #define PORT 8087
+#define TAM 5
 int main(int argc, char const* argv[])
 {
-	int server_fd, new_socket, valread;
+	int server_fd, new_socket, valread=1;
 	struct sockaddr_in address;
 	int opt = 1;
 	int addrlen = sizeof(address);
-	char buffer[1024] = { 0 };
-	char hello[] = "Hello from server";
+	char buffer[TAM] = { 0 };
+	char hello[] = "Helo";
 
 	// Creating socket file descriptor
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0))
@@ -52,18 +54,26 @@ int main(int argc, char const* argv[])
 		perror("accept");
 		exit(EXIT_FAILURE);
 	}
-	while (true)
+	else{
+		printf("cliente conectado\n");
+		send(new_socket, hello, strlen(hello), 0);
+		printf("Hello\n");
+	}
+	while (valread >0)
 	{
 		/* code */
 	
-		valread = read(new_socket, buffer, 1024);
-		printf("%s\n", buffer);
-		printf("%d\n", valread);
-		send(new_socket, hello, strlen(hello), 0);
-		printf("Hello message sent\n");
+		char aux[] = "Mensagem recebida: ";
+		valread = read(new_socket, buffer, TAM);
+		// printf("%d", valread);
+		printf("cliente: %s\n", buffer);
+		// printf("%s\n", strcat(aux,buffer));
+		// printf("%d\n", (valread+19));
+		send(new_socket, strcat(aux,buffer), (valread+19), 0);
+		memset(buffer, 0, strlen(buffer));
+		// send(new_socket, "Mensagem recebida: ", 20, 0);
 	}
-
-// closing the connected socket
+// closing the connected socket 
 	close(new_socket);
 // closing the listening socket
 	shutdown(server_fd, SHUT_RDWR);

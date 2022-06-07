@@ -2,16 +2,64 @@
 // programming
 #include <arpa/inet.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <pthread.h>
 #define PORT 8087
+#define TAM 5
+
+void* reader_thread(void *sock){
+	int valread=1;
+	while(valread >0){
+		char buffer[TAM+19];
+		memset(buffer, 0, TAM+19);
+		valread = read(*(int*)sock, buffer, TAM+19);
+		if (valread <=0) {
+			break;
+		}
+		printf("%d\n%s\n", valread, buffer);
+	}
+	return NULL;
+}
+
+
+void read_send_msg(int sock, char caracter){
+	char msg[TAM];
+	int i;
+	for (i =0; i<TAM-1;i++){
+		if (caracter>'\n'){
+			msg[i] = caracter;
+			// printf("%c", msg[i]);
+		}
+		else if (caracter == -2){
+			i--;
+		}
+		else {
+			caracter = fgetc(stdin);
+			break;
+		}
+		caracter = fgetc(stdin);
+	}
+	msg[i] = '\0';
+	send(sock , msg, strlen(msg),0);
+	// return;
+	if (caracter>10){
+		// fseek(stdin, -1, SEEK_CUR);
+		read_send_msg(sock, caracter);
+	}
+	else return;
+
+}
 
 int main(int argc, char const* argv[])
 {
-	int sock = 0, valread, client_fd;
+	int sock = 0, valread =1, client_fd;
+	pthread_t Reader;
+	pthread_create(&Reader, NULL, reader_thread, (void*)&sock);
 	struct sockaddr_in serv_addr;
-	char buffer[1024] = { 0 };
+	char buffer[TAM+19] = { 0 };
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("\n Socket creation error \n");
 		return -1;
@@ -36,22 +84,19 @@ int main(int argc, char const* argv[])
 		printf("\nConnection Failed \n");
 		return -1;
 	}
-    char hello[200];
-    while (true)
+	valread = read(sock, buffer, TAM);
+	printf("%s\n", buffer);
+	memset(buffer, 0, TAM);
+	void* arg = (void*) malloc(sizeof(int));
+	*(int*)arg = sock;
+    while (valread >0)
     {
-        scanf("%s", hello);
-        hello[strlen(hello)] = '\n';
-	    send(sock, hello, strlen(hello), 0);
-        for (int i=0;i<200;i++){
-            hello[i]= 0;
-        }
+        read_send_msg(sock, -2);
+		pthread_join(Reader, NULL);
+
         /* code */
     }
     
-	printf("Hello message sent\n");
-	valread = read(sock, buffer, 1024);
-	printf("%s\n", buffer);
-	printf("%d\n", valread);
 
 	// closing the connected socket
 	close(client_fd);
