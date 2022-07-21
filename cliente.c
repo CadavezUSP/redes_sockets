@@ -205,14 +205,6 @@ int main(int argc, char **argv)
   strcat(aux, nickname);
 
   signal(SIGINT, sinal_ctrl_c);
-  // printf("Nome de usuario: ");
-  //   fgets(nickname, NICK_LEN, stdin);
-  //   fim_da_string(nickname, strlen(nickname));
-
-  // if (strlen(nickname) > 50 || strlen(nickname) < 2){
-  // 	printf("O nome de usuario deve ser maior que 2 e menor que 50\n");
-  // 	return EXIT_FAILURE;
-  // }
 
   struct sockaddr_in server_addr;
 
