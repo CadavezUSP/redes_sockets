@@ -23,4 +23,4 @@ Agora para cada novo cliente utilize o comando:
 ```make cliente```    
 e é só seguir as instruções no terminal!!   
 
-[Link para o Video](https://drive.google.com/file/d/1EQ8W72oEIUgQqFSPS6zfFfXeHnW9CTUE/view?usp=sharing)
+
